@@ -3,15 +3,7 @@
 </view>
 <view class="footer-cont flex flex-between wr-class">
 	<view class="flex flex-between bottom-operate-left" wx:if="{{jumpArray.length > 0}}">
-		<view
-		  wx:for="{{jumpArray}}"
-		  wx:key="index"
-		  class="icon-warp operate-wrap"
-		  bindtap="toNav"
-		  data-ele="foot_navigation"
-		  data-index="{{index}}"
-		  data-url="{{item.url}}"
-		>
+		<view wx:for="{{jumpArray}}" wx:key="index" class="icon-warp operate-wrap" bindtap="toNav" data-ele="foot_navigation" data-index="{{index}}" data-url="{{item.url}}">
 			<view>
 				<text wx:if="{{shopCartNum > 0 && item.showCartNum}}" class="tag-cart-num">
 					{{shopCartNum > 99 ? '99+' : shopCartNum}}
@@ -24,10 +16,10 @@
 	<block wx:if="{{buttonType === 1}}">
 		<view class="flex buy-buttons">
 			<view class="bar-separately {{soldout || !isStock ? 'bar-addCart-disabled' : ''}}" bindtap="toAddCart">
-				加入购物车
+				更多信息
 			</view>
 			<view class="bar-buy {{soldout || !isStock ? 'bar-buyNow-disabled' : ''}}" bindtap="toBuyNow">
-				立即购买
+				购买请联系客服
 			</view>
 		</view>
 	</block>
@@ -35,4 +27,3 @@
 		<slot name="buyButton" />
 	</block>
 </view>
-

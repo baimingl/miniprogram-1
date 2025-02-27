@@ -22,6 +22,7 @@ Page({
   goodListPagination: {
     index: 0,
     num: 20,
+    total_page:1
   },
 
   privateData: {
@@ -38,11 +39,16 @@ Page({
 
   onReachBottom() {
     if (this.data.goodsListLoadStatus === 0) {
-      this.loadGoodsList();
+      if(this.goodListPagination.index >= this.goodListPagination.total_page){
+        this.setData({ goodsListLoadStatus: 2 });
+      }else{
+        this.loadGoodsList();
+      }
     }
   },
 
   onPullDownRefresh() {
+    this.goodListPagination.index = 0
     this.init();
   },
 
@@ -80,8 +86,8 @@ Page({
     });
     this.getBanner();
     this.getCategory();
-    // this.loadGoodsList(true);
-
+    this.loadGoodsList(true);
+    
 
     // fetchHome().then(({ swiper, tabList }) => {
     //   this.setData({
@@ -94,10 +100,11 @@ Page({
   },
 
   tabChangeHandle(e) {
-    // this.privateData.tabIndex = e.detail.value;
-    console.log(e.detail.value)
-    console.log(this.privateData)
-    // this.loadGoodsList(true);
+    this.privateData.tabIndex = e.detail.value;
+    this.goodListPagination.index = 0;
+    // console.log(e.detail.value)
+    // console.log(this.privateData)
+    this.loadGoodsList(true);
   },
 
   onReTry() {
@@ -113,21 +120,37 @@ Page({
 
     this.setData({ goodsListLoadStatus: 1 });
 
-    const pageSize = this.goodListPagination.num;
-    let pageIndex = this.privateData.tabIndex * pageSize + this.goodListPagination.index + 1;
-    if (fresh) {
-      pageIndex = 0;
-    }
+    const pageSize = this.goodListPagination.num
+    let pageIndex = this.goodListPagination.index 
+    const tabIndex = this.privateData.tabIndex
 
+    // if (fresh) {
+    //   pageIndex = 0;
+    // }
     try {
-      const nextList = await fetchGoodsList(pageIndex, pageSize);
+      const nextList = await fetchGoodsList(pageIndex+1, pageSize,tabIndex);
+      console.log(nextList)
+      // console.log(111)
+
+      var list_ = []
+      nextList.data.forEach(function(item){
+        list_.push({
+          spuId: item.id,
+          thumb: item.logo,
+          title: item.title,
+          price: item.market_price*100,
+        });
+      });
+
       this.setData({
-        goodsList: fresh ? nextList : this.data.goodsList.concat(nextList),
+        // goodsList: fresh ? nextList : this.data.goodsList.concat(nextList),
+        goodsList: fresh ? list_ : this.data.goodsList.concat(list_),
         goodsListLoadStatus: 0,
       });
 
-      this.goodListPagination.index = pageIndex;
+      this.goodListPagination.index = nextList.current_page;
       this.goodListPagination.num = pageSize;
+      this.goodListPagination.total_page = nextList.last_page;
     } catch (err) {
       this.setData({ goodsListLoadStatus: 3 });
     }
@@ -141,13 +164,13 @@ Page({
     });
   },
 
-  goodListAddCartHandle() {
-    Toast({
-      context: this,
-      selector: '#t-toast',
-      message: '点击加入购物车',
-    });
-  },
+  // goodListAddCartHandle() {
+  //   Toast({
+  //     context: this,
+  //     selector: '#t-toast',
+  //     message: '点击加入购物车',
+  //   });
+  // },
 
   navToSearchPage() {
     wx.navigateTo({ url: '/pages/goods/search/index' });

@@ -1,6 +1,5 @@
 import Toast from 'tdesign-miniprogram/toast/index';
 import { fetchGood } from '../../../services/good/fetchGood';
-import { fetchActivityList } from '../../../services/activity/fetchActivityList';
 import {
   getGoodsDetailsCommentList,
   getGoodsDetailsCommentsCount,
@@ -54,13 +53,7 @@ Page({
         title: '首页',
         url: '/pages/home/home',
         iconName: 'home',
-      },
-      {
-        title: '购物车',
-        url: '/pages/cart/index',
-        iconName: 'cart',
-        showCartNum: true,
-      },
+      }
     ],
     isStock: true,
     cartNum: 0,
@@ -105,11 +98,21 @@ Page({
   },
 
   buyItNow() {
-    this.showSkuSelectPopup(1);
+    // this.showSkuSelectPopup(1);
+    Toast({
+      context: this,
+      selector: '#t-toast',
+      message: '购买请到主页添加好友，或扫码添加好友，询问更多信息',
+    });
   },
 
   toAddCart() {
-    this.showSkuSelectPopup(2);
+    // this.showSkuSelectPopup(2);
+    Toast({
+      context: this,
+      selector: '#t-toast',
+      message: '购买请到主页添加好友，或扫码添加好友，询问更多信息',
+    });
   },
 
   toNav(e) {
@@ -122,10 +125,10 @@ Page({
   showCurImg(e) {
     const { index } = e.detail;
     const { images } = this.data.details;
-    wx.previewImage({
-      current: images[index],
-      urls: images, // 需要预览的图片http链接列表
-    });
+    // wx.previewImage({
+    //   current: images[index],
+    //   urls: images, // 需要预览的图片http链接列表
+    // });
   },
 
   onPageScroll({ scrollTop }) {
@@ -306,7 +309,24 @@ Page({
       isShowPromotionPop: true,
     });
   },
+  async getDetailData(spuId) {
+    try {
+      const detail = await fetchGood(spuId);
+      var detail_img_arr = detail.images.split(',')
+      detail_img_arr.unshift(detail.logo)
+      // console.log(detail_img_arr)
+      detail.images = detail_img_arr
+      detail.market_price = detail.market_price*100
 
+      this.setData({
+        details:detail,
+      });
+
+
+    } catch (err) {
+      this.setData({ goodsListLoadStatus: 3 });
+    }
+  },
   getDetail(spuId) {
     Promise.all([fetchGood(spuId), fetchActivityList()]).then((res) => {
       const [details, activityList] = res;
@@ -436,8 +456,8 @@ Page({
     this.setData({
       spuId: spuId,
     });
-    this.getDetail(spuId);
-    this.getCommentsList(spuId);
-    this.getCommentsStatistics(spuId);
+    this.getDetailData(spuId);
+    // this.getCommentsList(spuId);
+    // this.getCommentsStatistics(spuId);
   },
 });

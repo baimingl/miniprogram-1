@@ -1,4 +1,7 @@
 import { config } from '../../config/index';
+const api = require('../../config/api.js');
+const util = require('../../utils/util.js');
+
 
 /** 获取商品列表 */
 function mockFetchGood(ID = 0) {
@@ -9,10 +12,15 @@ function mockFetchGood(ID = 0) {
 
 /** 获取商品列表 */
 export function fetchGood(ID = 0) {
-  if (config.useMock) {
-    return mockFetchGood(ID);
-  }
+  // if (config.useMock) {
+  //   return mockFetchGood(ID);
+  // }
   return new Promise((resolve) => {
-    resolve('real api');
+    util.request(api.GoodsDetailUrl,{
+      goods_id:ID,
+    },'POST').then(function (res) {
+      console.log(res.data)
+      resolve(res.data);
+    });
   });
 }
