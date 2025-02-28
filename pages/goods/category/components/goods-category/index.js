@@ -35,6 +35,7 @@ Component({
       });
     }
   },
+
   methods: {
     onParentChange(event) {
       this.setActiveKey(event.detail.index, 0).then(() => {
@@ -54,8 +55,13 @@ Component({
     },
     changCategory(event) {
       const { item } = event.currentTarget.dataset;
+      console.log(item)
       this.triggerEvent('changeCategory', {
         item,
+      });
+      wx.navigateTo({
+        // url: '/pages/goods/list/index',
+        url: `/pages/goods/list/index?groupId=${item.groupId}`,
       });
     },
     setActiveKey(key, subKey) {
@@ -71,5 +77,6 @@ Component({
         );
       });
     },
+    
   },
 });

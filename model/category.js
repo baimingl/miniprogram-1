@@ -13,6 +13,7 @@ export function getCategoryList() {
             'https://cdn-we-retail.ym.tencent.com/miniapp/category/category-default.png',
           children: [
             {
+              
               groupId: '249480',
               name: '卫衣',
               thumbnail:

@@ -20,6 +20,8 @@ Page({
     hasLoaded: false,
     loadMoreStatus: 0,
     loading: true,
+    groupId:0,
+    pageLoading: false,
   },
 
   pageNum: 1,
@@ -39,15 +41,18 @@ Page({
   },
 
   generalQueryData(reset = false) {
-    const { filter, keywords, minVal, maxVal } = this.data;
+
+    const { filter, keywords, minVal, maxVal, groupId} = this.data;
     const { pageNum, pageSize } = this;
     const { sorts, overall } = filter;
     const params = {
       sort: 0, // 0 综合，1 价格
       pageNum: 1,
-      pageSize: 30,
+      pageSize: 6,
       keyword: keywords,
+      groupId:groupId,
     };
+
 
     if (sorts) {
       params.sort = 1;
@@ -65,11 +70,16 @@ Page({
     return {
       ...params,
       pageNum: pageNum + 1,
-      pageSize,
+      pageSize:params.pageSize,
     };
   },
 
   async init(reset = true) {
+    wx.stopPullDownRefresh();
+
+    this.setData({
+      pageLoading: true,
+    });
     const { loadMoreStatus, goodsList = [] } = this.data;
     const params = this.generalQueryData(reset);
     if (loadMoreStatus !== 0) return;
@@ -77,12 +87,33 @@ Page({
       loadMoreStatus: 1,
       loading: true,
     });
+    
     try {
+      console.log(params)
       const result = await fetchGoodsList(params);
+      // console.log(result)
       const code = 'Success';
       const data = result;
       if (code.toUpperCase() === 'SUCCESS') {
-        const { spuList, totalCount = 0 } = data;
+        // console.log(data)
+        const data_obj = {}
+        data_obj.totalCount = data.total
+        data_obj.current_page = data.current_page
+        data_obj.last_page = data.last_page
+
+        var list_ = []
+        data.data.forEach(function(item){
+          list_.push({
+            spuId: item.id,
+            thumb: item.logo,
+            title: item.title,
+            price: item.market_price*100,
+          });
+        });
+        data_obj.spuList = list_
+        console.log(data_obj)
+
+        const { spuList, totalCount = 0 } = data_obj;
         if (totalCount === 0 && reset) {
           this.total = totalCount;
           this.setData({
@@ -100,10 +131,12 @@ Page({
         const _goodsList = reset ? spuList : goodsList.concat(spuList);
         const _loadMoreStatus = _goodsList.length === totalCount ? 2 : 0;
         this.pageNum = params.pageNum || 1;
+        console.log(this.pageNum)
         this.total = totalCount;
         this.setData({
           goodsList: _goodsList,
           loadMoreStatus: _loadMoreStatus,
+          pageLoading: false,
         });
       } else {
         this.setData({
@@ -123,8 +156,12 @@ Page({
       loading: false,
     });
   },
-
-  onLoad() {
+  
+  onLoad(query) {
+    const { groupId } = query;
+    this.setData({
+      groupId: groupId,
+    });
     this.init(true);
   },
 
@@ -138,6 +175,12 @@ Page({
       return;
     }
     this.init(false);
+  },
+
+  onPullDownRefresh() {
+    console.log(2222)
+    // this.goodListPagination.index = 0
+    // this.init();
   },
 
   handleAddCart() {

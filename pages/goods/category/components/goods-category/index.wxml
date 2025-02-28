@@ -1,20 +1,10 @@
 <view class="goods-category custom-class">
 	<c-sidebar custom-class="custom-sidebar" bindchange="onParentChange" activeKey="{{activeKey}}">
-		<c-sidebar-item
-		  wx:for="{{ category }}"
-		  wx:key="index"
-		  title="{{ item.name }}"
-		  disabled="{{ item.disabled }}"
-		/>
+		<c-sidebar-item wx:for="{{ category }}" wx:key="index" title="{{ item.name }}" disabled="{{ item.disabled }}" />
 	</c-sidebar>
 	<view class="goods-category__right">
-		<c-tabbar
-		  wx:if="{{isSlotRight}}"
-		  activeKey="{{subActiveKey}}"
-		  bindchange="onChildChange"
-		  showMore
-		>
-			<slot/>
+		<c-tabbar wx:if="{{isSlotRight}}" activeKey="{{subActiveKey}}" bindchange="onChildChange" showMore>
+			<slot />
 		</c-tabbar>
 		<view wx:if="{{!isSlotRight}}" class="goods-category-normal">
 			<view class="goods-category-normal-item" wx:if="{{category[activeKey].children && category[activeKey].children.length > 0}}">
@@ -23,15 +13,7 @@
 						{{item.name}}
 					</view>
 					<view class="goods-category-normal-item-container">
-						<view
-						  class="goods-category-normal-item-container-item"
-						  wx:for="{{item.children}}"
-						  wx:for-index="subIndex"
-						  wx:key="subIndex"
-						  wx:for-item="subItem"
-						  bindtap="changCategory"
-						  data-item="{{subItem}}"
-						>
+						<view class="goods-category-normal-item-container-item" wx:for="{{item.children}}" wx:for-index="subIndex" wx:key="subIndex" wx:for-item="subItem" bindtap="changCategory" data-item="{{subItem}}">
 							<t-image src="{{subItem.thumbnail}}" t-class="image" />
 							<view class="flex goods-category-normal-item-container-item-title">
 								{{subItem.name}}
@@ -41,12 +23,7 @@
 				</block>
 				<view class="goods-category-normal-item-second-container" wx:if="{{level === 2}}">
 					<block wx:for="{{category[activeKey].children}}" wx:key="index">
-						<view
-						  class="goods-category-normal-item-second-container-item"
-						  wx:for-key="index"
-						  bindtap="changCategory"
-						  data-item="{{item}}"
-						>
+						<view class="goods-category-normal-item-second-container-item" wx:for-key="index" bindtap="changCategory" data-item="{{item}}">
 							<t-image src="{{item.thumbnail}}" t-class="image" />
 							<view class="flex goods-category-normal-item-container-item-title">
 								{{item.name}}
@@ -58,4 +35,3 @@
 		</view>
 	</view>
 </view>
-

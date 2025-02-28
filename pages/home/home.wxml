@@ -17,7 +17,7 @@
       <t-tab-panel wx:for="{{tabList}}" wx:for-index="index" wx:key="index" label="{{item.name}}" value="{{item.id}}" />
     </t-tabs>
   </view>
-
+  <view class="empty-wrap" style="text-align: center;font-size:12px" wx:if="{{goodsList.length == 0}}">暂无相关商品</view>
   <goods-list wr-class="goods-list-container" goodsList="{{goodsList}}" bind:click="goodListClickHandle" bind:addcart="goodListAddCartHandle" />
   <load-more list-is-empty="{{!goodsList.length}}" status="{{goodsListLoadStatus}}" bind:retry="onReTry" />
   <t-toast id="t-toast" />

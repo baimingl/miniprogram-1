@@ -21,7 +21,7 @@ Page({
 
   goodListPagination: {
     index: 0,
-    num: 20,
+    num: 4,
     total_page:1
   },
 

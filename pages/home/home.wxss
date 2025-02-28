@@ -105,3 +105,12 @@ page {
   --td-tab-item-color: #666;
   --td-tab-track-color: red;
 }
+.empty-wrap {
+
+  height: 100%;
+}
+
+
+.goods-list-container .empty-wrap .empty-tips .empty-content .content-text {
+  margin-top: 40rpx;
+}
